@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
-. ./activate.sh
+uv run echo "Linting src tests"
+. ./activate
 echo Running ruff src
 ruff check --fix src
 echo Running ruff tests

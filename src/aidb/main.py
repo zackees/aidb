@@ -6,10 +6,10 @@ import shutil
 import subprocess
 import sys
 import time
+import warnings
+from dataclasses import dataclass
 from getpass import getpass
 from tempfile import NamedTemporaryFile
-
-from dataclasses import dataclass
 
 import pymysql
 
@@ -34,7 +34,7 @@ Then based on that response generating the SQL query.
 
 @dataclass
 class Args:
-    set_connection_string:  str | None
+    set_connection_string: str | None
 
 
 def create_args() -> Args:
@@ -135,19 +135,19 @@ def run(
 
         return 0
     except KeyboardInterrupt:
-        print("Program aborted by user.")
+        warnings.warn("Program aborted by user.")
         return 1
     except FileNotFoundError as e:
-        print(f"Error: File not found. {e}")
+        warnings.warn(f"Error: File not found. {e}")
         return 1
     except PermissionError as e:
-        print(f"Error: Permission denied. {e}")
+        warnings.warn(f"Error: Permission denied. {e}")
         return 1
     except subprocess.SubprocessError as e:
-        print(f"Error in subprocess execution: {e}")
+        warnings.warn(f"Error in subprocess execution: {e}")
         return 1
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        warnings.warn(f"An unexpected error occurred: {e}")
         return 1
 
 
