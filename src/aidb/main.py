@@ -9,6 +9,8 @@ import time
 from getpass import getpass
 from tempfile import NamedTemporaryFile
 
+from dataclasses import dataclass
+
 import pymysql
 
 from aidb.db_dump_schema_json import db_dump_table_schema_json
@@ -30,7 +32,12 @@ Then based on that response generating the SQL query.
 """
 
 
-def create_args() -> argparse.Namespace:
+@dataclass
+class Args:
+    set_connection_string:  str | None
+
+
+def create_args() -> Args:
     """Create an argument parser."""
     parser = argparse.ArgumentParser(
         description="Dump the schema of the specified tables or all tables in the database."
@@ -38,7 +45,10 @@ def create_args() -> argparse.Namespace:
     parser.add_argument(
         "--set", type=str, help="Set the connection string and exit", required=False
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    return Args(
+        set_connection_string=args.set,
+    )
 
 
 def sanitize_db_url(db_url: str) -> str:
@@ -145,9 +155,9 @@ def main() -> int:
     """Return 0 for success."""
     args = create_args()
 
-    if args.set:
-        store_connection_url(args.set)
-        print(f"Connection string set to: {args.set}")
+    if args.set_connection_string:
+        store_connection_url(args.set_connection_string)
+        print(f"Connection string set to: {args.set_connection_string}")
         return 0
 
     connection_string = load_connection_url()
